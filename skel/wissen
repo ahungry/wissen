@@ -73,10 +73,25 @@ FROM doc d
 JOIN topic t USING (topic_name, subject_name, system_name)
 JOIN subject s USING (subject_name, system_name)
 JOIN system sy USING (system_name)
-WHERE d.doc LIKE '%$1%'
+WHERE 1=0
+  -- Search on content
+  OR d.doc LIKE '%$1%'
   OR t.doc LIKE '%$1%'
   OR s.doc LIKE '%$1%'
   OR sy.doc LIKE '%$1%'
+
+  -- Search on labels
+  OR d.label LIKE '%$1%'
+  OR t.label LIKE '%$1%'
+  OR s.label LIKE '%$1%'
+  OR sy.label LIKE '%$1%'
+
+  -- Search on labels
+  OR d.doc_name LIKE '%$1%'
+  OR t.topic_name LIKE '%$1%'
+  OR s.subject_name LIKE '%$1%'
+  OR sy.system_name LIKE '%$1%'
+
 ;
 EOF
 }
@@ -116,10 +131,18 @@ doc_add () {
     # We allow this to fail, so we don't have to check if the paths already exist.
     sqlite3 wissen.db 2>/dev/null <<EOF
 --BEGIN;
-INSERT INTO system (system_name, label, doc) VALUES ('$system', '$system', '$doc_doc');
-INSERT INTO subject (system_name, subject_name, label, doc) VALUES ('$system', '$subject', '$subject', '$doc_doc');
-INSERT INTO topic (system_name, subject_name, topic_name, label, doc) VALUES ('$system', '$subject', '$topic', '$topic', '$doc_doc');
-INSERT INTO doc (system_name, subject_name, topic_name, doc_name, label, doc) VALUES ('$system', '$subject', '$topic', '$doc', '$doc_label', '$doc_doc');
+INSERT INTO system (system_name, label, doc)
+VALUES (trim('$system'), trim('$system'), trim('$doc_doc'));
+
+INSERT INTO subject (system_name, subject_name, label, doc)
+VALUES (trim('$system'), trim('$subject'), trim('$subject'), trim('$doc_doc'));
+
+INSERT INTO topic (system_name, subject_name, topic_name, label, doc)
+VALUES (trim('$system'), trim('$subject'), trim('$topic'), trim('$topic'), trim('$doc_doc'));
+
+INSERT INTO doc (system_name, subject_name, topic_name, doc_name, label, doc)
+VALUES (trim('$system'), trim('$subject'), trim('$topic'), trim('$doc'), trim('$doc_label'), trim('$doc_doc'));
+
 --COMMIT;
 EOF
 }
