@@ -104,7 +104,7 @@ doc_ls () {
     sqlite3 wissen.db <<EOF
 .headers on
 .mode column
-.width 10 10 10 10 $cols
+-- .width 10 10 10 10 $cols
 
 SELECT COALESCE(sy.label, sy.system_name) AS system
   , COALESCE(s.label, s.subject_name) AS subject

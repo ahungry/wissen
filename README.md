@@ -65,9 +65,9 @@ Then you can search on that entry with `ls` or `apropos` as such:
 Which will print a result similar to this:
 
 ```sh
-system      subject     topic       title       doc
+system      subject     topic       title              doc
 --------------------------------------------------------------------------------------------
-my_proj     usage       testing     Running th  To run the test suite, just type "Make test"
+my_proj     usage       testing     Running the Tests  To run the test suite, just type "Make test"
 ```
 
 ## License
