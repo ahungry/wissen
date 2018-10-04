@@ -98,19 +98,36 @@ EOF
 
 # Just pretty print out the list of docs.
 doc_ls () {
+    cols=$(expr $(tput cols) - 48)
+    echo $cols
+
     sqlite3 wissen.db <<EOF
 .headers on
 .mode column
+.width 10 10 10 10 $cols
 
 SELECT COALESCE(sy.label, sy.system_name) AS system
   , COALESCE(s.label, s.subject_name) AS subject
   , COALESCE(t.label, t.topic_name) AS topic
   , COALESCE(d.label, d.doc_name) AS title
-  --, d.doc
+  , replace(replace(d.doc, char(10), ''), char(13), '')
 FROM doc d
 JOIN topic t USING (topic_name, subject_name, system_name)
 JOIN subject s USING (subject_name, system_name)
 JOIN system sy USING (system_name)
+WHERE 1=0
+  -- Search on labels
+  OR d.label LIKE '%$1%'
+  OR t.label LIKE '%$1%'
+  OR s.label LIKE '%$1%'
+  OR sy.label LIKE '%$1%'
+
+  -- Search on labels
+  OR d.doc_name LIKE '%$1%'
+  OR t.topic_name LIKE '%$1%'
+  OR s.subject_name LIKE '%$1%'
+  OR sy.system_name LIKE '%$1%'
+
 ;
 EOF
 }
@@ -125,7 +142,7 @@ doc_add () {
     topic=$(echo $leaf | cut -f3 -d'.')
     doc=$(echo $leaf | cut -f4 -d'.')
 
-    doc_label=$2
+    doc_label=$(echo $2 | sed -e 's/^[ #]*//g')
     doc_doc=$3
 
     # We allow this to fail, so we don't have to check if the paths already exist.
