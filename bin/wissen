@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# -*- mode: sh -*-
+
+# Just a really simple way to inject user data we want.
+add_doc () {
+    leaf=$1
+
+    system=$(echo $leaf | cut -f1 -d'.')
+    subject=$(echo $leaf | cut -f2 -d'.')
+    topic=$(echo $leaf | cut -f3 -d'.')
+    doc=$(echo $leaf | cut -f4 -d'.')
+
+    doc_label=$2
+    doc_doc=$3
+
+    echo $system $subject $topic $doc $doc_label $doc_doc
+
+    # We allow this to fail, so we don't have to check if the paths already exist.
+    sqlite3 wissen.db 2>/dev/null <<EOF
+--BEGIN;
+INSERT INTO system (system_name) VALUES ('$system');
+INSERT INTO subject (system_name, subject_name) VALUES ('$system', '$subject');
+INSERT INTO topic (system_name, subject_name, topic_name) VALUES ('$system', '$subject', '$topic');
+INSERT INTO doc (system_name, subject_name, topic_name, doc_name, label, doc) VALUES ('$system', '$subject', '$topic', '$doc', '$doc_label', '$doc_doc');
+
+.headers on
+.mode column
+
+SELECT sy.label, s.label, t.label
+, d.label, d.doc
+FROM doc d
+JOIN topic t USING (topic_name, subject_name, system_name)
+JOIN subject s USING (subject_name, system_name)
+JOIN system sy USING (system_name)
+;
+
+--COMMIT;
+EOF
+}
+
+add_doc $1 "$2" "$3"
+
+exit 0
