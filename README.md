@@ -27,7 +27,13 @@ documentation, and instead opt for short blog posts etc.
 #### References
 https://github.com/ahungry/wissen
 
+## Installation
+
+Just clone the repo and type: `./bootstrap`
+
 ## Usage
+
+Check the various available commands via: `./bin/wissen` after installing.
 
 ```sh
 Usage: wissen [-h | --help] <command> [<args>]
