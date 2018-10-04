@@ -37,7 +37,8 @@ EOF
 
     # Dynamically pull from database
     sqlite3 wissen.db <<EOF
-.mode tabs
+.mode column
+.width auto 200
 
 SELECT '  ' || d.doc_name, d.doc
 FROM doc d
@@ -99,7 +100,6 @@ EOF
 # Just pretty print out the list of docs.
 doc_ls () {
     cols=$(expr $(tput cols) - 48)
-    echo $cols
 
     sqlite3 wissen.db <<EOF
 .headers on
@@ -240,7 +240,7 @@ doc_import () {
 
 # Dynamically dispatch based on action.
 if type doc_$action > /dev/null 2>&1; then
-    doc_$action "$arg1" "$arg2" "$arg3" | expand -t14
+    doc_$action "$arg1" "$arg2" "$arg3"
 else
     doc_help
     echo -e "\nInvalid command or option, please see usage above."

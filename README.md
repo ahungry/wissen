@@ -48,6 +48,28 @@ These are common wissen commands used in various situations:
     apropos     Usage: "wissen apropos <term>" to search all docs for the term.
 ```
 
+### Sample: Adding an entry via the CLI directly
+
+You can add an entry as such:
+
+```sh
+./bin/wissen add my_proj.usage.testing.run 'Running the Tests' 'To run the test suite, just type "Make test"'
+```
+
+Then you can search on that entry with `ls` or `apropos` as such:
+
+```sh
+./bin/wissen ls test
+```
+
+Which will print a result similar to this:
+
+```sh
+system      subject     topic       title       doc
+--------------------------------------------------------------------------------------------
+my_proj     usage       testing     Running th  To run the test suite, just type "Make test"
+```
+
 ## License
 
 Copyright © 2018 Matthew Carter <m@ahungry.com>
