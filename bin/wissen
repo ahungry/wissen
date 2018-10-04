@@ -10,16 +10,28 @@ arg1=$(echo $2 | sed -e "s/'/''/g")
 arg2=$(echo $3 | sed -e "s/'/''/g")
 arg3=$(echo $4 | sed -e "s/'/''/g")
 
+case $action in
+    '-h')
+        action=help
+        ;;
+
+    *help)
+        action=help
+        ;;
+
+    *)
+        ;;
+esac
+
 # Just pretty print out the docs.
 doc_help () {
     # Header
     cat <<EOF
 Wissen (v0.0.1)
 
-Homepage: https://github.com/ahungry/wissen
-Email: Matthew Carter <m@ahungry.com>
+Usage: wissen [-h | --help] <command> [<args>]
 
-Available help commands:
+These are common wissen commands used in various situations:
 
 EOF
 
@@ -36,6 +48,12 @@ WHERE d.system_name = 'wissen'
   AND d.subject_name = 'cli'
   AND d.topic_name = 'usage'
 ;
+EOF
+
+    # Footer
+    cat <<EOF
+
+Report bugs to: [ m@ahungry.com | https://github.com/ahungry/wissen ]
 EOF
 
 }
@@ -72,7 +90,7 @@ doc_add () {
     doc_doc=$3
 
     # We allow this to fail, so we don't have to check if the paths already exist.
-    sqlite3 wissen.db <<EOF
+    sqlite3 wissen.db 2>/dev/null <<EOF
 --BEGIN;
 INSERT INTO system (system_name) VALUES ('$system');
 INSERT INTO subject (system_name, subject_name) VALUES ('$system', '$subject');
@@ -80,11 +98,15 @@ INSERT INTO topic (system_name, subject_name, topic_name) VALUES ('$system', '$s
 INSERT INTO doc (system_name, subject_name, topic_name, doc_name, label, doc) VALUES ('$system', '$subject', '$topic', '$doc', '$doc_label', '$doc_doc');
 --COMMIT;
 EOF
-
-    doc_ls
 }
 
 # Dynamically dispatch based on action.
-doc_$action "$arg1" "$arg2" "$arg3" | expand -t14
+if type doc_$action > /dev/null 2>&1; then
+    doc_$action "$arg1" "$arg2" "$arg3" | expand -t14
+else
+    doc_help
+    echo -e "\nInvalid command or option, please see usage above."
+    exit 1
+fi
 
 exit 0
