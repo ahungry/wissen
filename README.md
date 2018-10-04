@@ -27,6 +27,17 @@ documentation, and instead opt for short blog posts etc.
 #### References
 https://github.com/ahungry/wissen
 
+## Usage
+
+```sh
+Usage: wissen [-h | --help] <command> [<args>]
+
+These are common wissen commands used in various situations:
+
+    ls          Usage: "wissen ls" to list docs.
+    add         Usage: "wissen add <path> <label> <summary>" to add a doc, where path follows the form: system.subject.topic.doc
+```
+
 ## License
 
 Copyright © 2018 Matthew Carter <m@ahungry.com>
