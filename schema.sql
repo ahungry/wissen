@@ -12,52 +12,69 @@
 
 BEGIN;
 
+-- Is this a mess, or is it OK?  Its basically going to chain with
+-- each node requiring an extra column.
+
 CREATE TABLE system (system_name PRIMARY KEY, label);
 
-CREATE TABLE subject (subject_name PRIMARY KEY, label,
-  system_name REFERENCES system (system_name));
+CREATE TABLE subject (subject_name, label,
+  system_name REFERENCES system (system_name),
+  PRIMARY KEY (subject_name, system_name));
 
-CREATE TABLE topic (topic_name PRIMARY KEY, label,
-  subject_name REFERENCES subject (subject_name));
+CREATE TABLE topic (topic_name, label,
+  system_name REFERENCES system (system_name),
+  subject_name REFERENCES subject (subject_name),
+  PRIMARY KEY (topic_name, subject_name, system_name));
 
-CREATE TABLE doc (doc_name PRIMARY KEY, label, doc,
-  topic_name REFERENCES topic (topic_name));
+CREATE TABLE doc (doc_name, label, doc,
+  system_name REFERENCES system (system_name),
+  subject_name REFERENCES subject (subject_name),
+  topic_name REFERENCES topic (topic_name),
+  PRIMARY KEY (doc_name, topic_name, subject_name, system_name));
 
 INSERT INTO system (system_name, label)
 VALUES
-  ('wissen', 'Wissen')
+  ('wissen', 'Wissen (Documentation system)')
+, ('ahubu', 'AHUBU (Ahungry web browser)')
 ;
 
 INSERT INTO subject (system_name, subject_name, label)
 VALUES
   ('wissen', 'overview', 'Overview')
+, ('wissen', 'support', 'Support')
+, ('ahubu', 'overview', 'Overview')
+, ('ahubu', 'support', 'Support')
 ;
 
-INSERT INTO topic (subject_name, topic_name, label)
+INSERT INTO topic (system_name, subject_name, topic_name, label)
 VALUES
-  ('overview', 'general', 'General')
-  ('overview', 'hierarchy', 'Data Hierarchy')
+  ('wissen', 'overview', 'general', 'General')
+, ('wissen', 'overview', 'hierarchy', 'Data Hierarchy')
+, ('ahubu', 'overview', 'general', 'General')
 ;
 
-INSERT INTO doc (topic_name, doc_name, label, doc)
+INSERT INTO doc (system_name, subject_name, topic_name, doc_name, label, doc)
 VALUES
-  ('general', 'abstract', 'Abstract', 'The intent is to index a lot of docs.')
-, ('general', 'why', 'Why do this?', 'I feel that having so many doc systems is superflous, to the point that almost no developers spend adequate time on reading documentation, and instead opt for short blog posts etc.')
+  ('wissen', 'overview', 'general', 'abstract', 'Abstract', 'The intent is to index a lot of docs.')
+, ('wissen', 'overview', 'general', 'why', 'Why do this?', 'I feel that having so many doc systems is superflous, to the point that almost no developers spend adequate time on reading documentation, and instead opt for short blog posts etc.')
+, ('wissen', 'overview', 'general', 'refs', 'References', 'https://github.com/ahungry/wissen')
 
-, ('hierarchy', 'abstract', 'Abstract', 'Data is nested as such:  system -> subject -> topic -> doc ')
+, ('wissen', 'overview', 'hierarchy', 'abstract', 'Abstract', 'Data is nested as such:  system -> subject -> topic -> doc ')
+, ('ahubu', 'overview', 'general', 'abstract', 'Abstract', 'Just a highly specialized browser.')
+, ('ahubu', 'overview', 'general', 'refs', 'References', 'https://github.com/ahungry/ahubu')
 ;
 
 -- Pretty print
 .headers on
 .mode column
 
-SELECT ROWID, * FROM doc;
+-- SELECT ROWID, * FROM doc;
 
 SELECT sy.label, s.label, t.label
 , d.label, d.doc
 FROM doc d
-JOIN topic t USING (topic_name)
-JOIN subject s USING (subject_name)
+JOIN topic t USING (topic_name, subject_name, system_name)
+JOIN subject s USING (subject_name, system_name)
 JOIN system sy USING (system_name)
 ;
 
