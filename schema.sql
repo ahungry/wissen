@@ -15,22 +15,35 @@ BEGIN;
 -- Is this a mess, or is it OK?  Its basically going to chain with
 -- each node requiring an extra column.
 
-CREATE TABLE system (system_name PRIMARY KEY, label);
+CREATE TABLE system (
+    system_name PRIMARY KEY
+  , label
+);
 
-CREATE TABLE subject (subject_name, label,
-  system_name REFERENCES system (system_name),
-  PRIMARY KEY (subject_name, system_name));
+CREATE TABLE subject (
+    system_name REFERENCES system (system_name)
+  , subject_name
+  , label
+  , PRIMARY KEY (subject_name, system_name)
+);
 
-CREATE TABLE topic (topic_name, label,
-  system_name REFERENCES system (system_name),
-  subject_name REFERENCES subject (subject_name),
-  PRIMARY KEY (topic_name, subject_name, system_name));
+CREATE TABLE topic (
+    system_name REFERENCES system (system_name)
+  , subject_name REFERENCES subject (subject_name)
+  , topic_name
+  , label
+  , PRIMARY KEY (topic_name, subject_name, system_name)
+);
 
-CREATE TABLE doc (doc_name, label, doc,
-  system_name REFERENCES system (system_name),
-  subject_name REFERENCES subject (subject_name),
-  topic_name REFERENCES topic (topic_name),
-  PRIMARY KEY (doc_name, topic_name, subject_name, system_name));
+CREATE TABLE doc (
+    system_name REFERENCES system (system_name)
+  , subject_name REFERENCES subject (subject_name)
+  , topic_name REFERENCES topic (topic_name)
+  , doc_name
+  , label
+  , doc
+  , PRIMARY KEY (doc_name, topic_name, subject_name, system_name)
+);
 
 INSERT INTO system (system_name, label)
 VALUES
