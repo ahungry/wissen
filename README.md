@@ -40,6 +40,7 @@ Usage: wissen [-h | --help] <command> [<args>]
 
 These are common wissen commands used in various situations:
 
+    help        Usage: "wissen help" to list this help document.
     ls          Usage: "wissen ls" to list docs.
     add         Usage: "wissen add <path> <label> <summary>" to add a doc, where path follows the form: system.subject.topic.doc
 ```

@@ -1,7 +1,12 @@
 all: help
 
-help: wissen.db
+help: wissen.db bin
 	./bin/wissen help
+
+bin:
+	@-mkdir bin
+	@cp skel/wissen bin/
+	@chmod +x bin/wissen
 
 wissen.db:
 	@cat schema.sql | sqlite3 wissen.db >/dev/null
@@ -14,5 +19,6 @@ test: wissen.db
 
 clean:
 	@-rm -f wissen.db
+	@-rm -fr bin
 
 .PHONY: help
