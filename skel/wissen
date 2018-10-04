@@ -59,11 +59,20 @@ EOF
 
 }
 
+# Html based search
+doc_gapropos () {
+    echo '<table>' > /tmp/wissen.html
+    doc_apropos "$1" html >> /tmp/wissen.html
+    echo '</table>' >> /tmp/wissen.thml && x-www-browser /tmp/wissen.html
+}
+
 # Search
 doc_apropos () {
+    mode=$2
+
     sqlite3 wissen.db <<EOF
 .headers on
-.mode line
+.mode ${mode:-"line"}
 
 SELECT COALESCE(sy.label, sy.system_name) AS system
   , COALESCE(s.label, s.subject_name) AS subject
