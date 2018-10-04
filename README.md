@@ -1,6 +1,6 @@
 # WISSEN
 
-Wissen (Wise / German for Knowledge) - A localized copy of a
+Wissen (Wise / German for Knowledge) - Run a self-hosted copy of a
 centralized documentation store.
 
 Aims to be a glomming of documentation from various sources to allow
