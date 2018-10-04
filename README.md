@@ -1,4 +1,4 @@
-# WISSEN
+# Wissen
 
 Wissen (Wise / German for Knowledge) - Run a self-hosted copy of a
 centralized documentation store.
