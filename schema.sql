@@ -85,9 +85,13 @@ VALUES
 .mode column
 
 -- SELECT ROWID, * FROM doc;
+select * from topic;
 
-SELECT sy.label, s.label, t.label
-, d.label, d.doc
+SELECT COALESCE(sy.label, sy.system_name) AS system
+  , COALESCE(s.label, s.subject_name) AS subject
+  , COALESCE(t.label, t.topic_name) AS topic
+  , COALESCE(d.label, d.doc_name) AS doc
+  , d.doc
 FROM doc d
 JOIN topic t USING (topic_name, subject_name, system_name)
 JOIN subject s USING (subject_name, system_name)
