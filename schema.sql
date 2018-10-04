@@ -18,12 +18,14 @@ BEGIN;
 CREATE TABLE system (
     system_name PRIMARY KEY
   , label
+  , doc
 );
 
 CREATE TABLE subject (
     system_name REFERENCES system (system_name)
   , subject_name
   , label
+  , doc
   , PRIMARY KEY (subject_name, system_name)
 );
 
@@ -32,6 +34,7 @@ CREATE TABLE topic (
   , subject_name REFERENCES subject (subject_name)
   , topic_name
   , label
+  , doc
   , PRIMARY KEY (topic_name, subject_name, system_name)
 );
 
