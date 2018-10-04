@@ -68,7 +68,7 @@ doc_apropos () {
 SELECT COALESCE(sy.label, sy.system_name) AS system
   , COALESCE(s.label, s.subject_name) AS subject
   , COALESCE(t.label, t.topic_name) AS topic
-  , COALESCE(d.label, d.doc_name) AS title
+  , COALESCE(d.label, d.doc_name) AS doc_name
   , d.doc
 FROM doc d
 JOIN topic t USING (topic_name, subject_name, system_name)
@@ -109,7 +109,7 @@ doc_ls () {
 SELECT COALESCE(sy.label, sy.system_name) AS system
   , COALESCE(s.label, s.subject_name) AS subject
   , COALESCE(t.label, t.topic_name) AS topic
-  , COALESCE(d.label, d.doc_name) AS title
+  , COALESCE(d.label, d.doc_name) AS doc_name
   , replace(replace(d.doc, char(10), ''), char(13), '') AS doc
 FROM doc d
 JOIN topic t USING (topic_name, subject_name, system_name)

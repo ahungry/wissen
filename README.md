@@ -1,5 +1,23 @@
 # Wissen
 
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [Wissen](#wissen)
+    - [Overview](#overview)
+        - [General](#general)
+            - [Abstract](#abstract)
+            - [Why do this?](#why-do-this)
+            - [References](#references)
+    - [Installation](#installation)
+    - [Usage](#usage)
+        - [Sample: Adding an entry via the CLI directly](#sample-adding-an-entry-via-the-cli-directly)
+        - [Sample: Importing an entry](#sample-importing-an-entry)
+        - [Sample: Mass importing a source directory of many projects](#sample-mass-importing-a-source-directory-of-many-projects)
+    - [License](#license)
+
+<!-- markdown-toc end -->
+
 Wissen (Wise / German for Knowledge) - Run a self-hosted copy of a
 centralized documentation store.
 
@@ -68,6 +86,29 @@ Which will print a result similar to this:
 system      subject     topic       title              doc
 --------------------------------------------------------------------------------------------
 my_proj     usage       testing     Running the Tests  To run the test suite, just type "Make test"
+```
+
+### Sample: Importing an entry
+
+You can import a markdown document as such:
+
+```sh
+./bin/wissen import mySystemName README.md
+```
+
+### Sample: Mass importing a source directory of many projects
+
+This will cause each directory within <dir-path> to be imported as a
+system (named after the directory name).  Under each system, every
+markdown file will be auto-found and imported under that system.
+
+The second arg is a max-depth - useful if you know all your docs are
+within the top 2 levels of the project (root level README.md, or
+docs/SOMETHING.md would then be imported - things such as vendor/ or
+node_modules/ directorise would not).
+
+```sh
+./bin/wissen import_dir ~/my-projects 2
 ```
 
 ## License
