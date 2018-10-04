@@ -43,6 +43,8 @@ These are common wissen commands used in various situations:
     help        Usage: "wissen help" to list this help document.
     ls          Usage: "wissen ls" to list docs.
     add         Usage: "wissen add <path> <label> <summary>" to add a doc, where path follows the form: system.subject.topic.doc
+    import      Usage: "wissen import <markdown-file>" to import as a doc.
+    apropos     Usage: "wissen apropos <term>" to search all docs for the term.
 ```
 
 ## License

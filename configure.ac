@@ -22,5 +22,15 @@ if test x"$BASH_CHECK" != x"yes" ; then
     AC_MSG_ERROR([Please install bash.])
 fi
 
+AC_CHECK_PROG(SED_CHECK, sed, yes)
+if test x"$SED_CHECK" != x"yes" ; then
+    AC_MSG_ERROR([Please install sed.])
+fi
+
+AC_CHECK_PROG(EXPAND_CHECK, expand, yes)
+if test x"$EXPAND_CHECK" != x"yes" ; then
+    AC_MSG_ERROR([Please install expand.])
+fi
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
