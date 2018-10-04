@@ -1,10 +1,9 @@
 all: help
 
-help: bin
+help: bin/wissen
 	./bin/wissen help
 
-bin: wissen.db
-	@-mkdir bin
+bin/wissen: wissen.db
 	@cp skel/wissen bin/
 	@chmod +x bin/wissen
 	@./bin/wissen add wissen.cli.usage.help 'help' 'Usage: "wissen help" to list this help document.'
@@ -19,6 +18,6 @@ test: wissen.db
 
 clean:
 	@-rm -f wissen.db
-	@-rm -fr bin
+	@-rm -fr bin/*
 
 .PHONY: help
