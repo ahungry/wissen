@@ -22,7 +22,7 @@ CREATE TABLE system (
 );
 
 CREATE TABLE subject (
-    system_name REFERENCES system (system_name)
+    system_name REFERENCES system (system_name) ON UPDATE CASCADE
   , subject_name
   , label
   , doc
@@ -30,8 +30,8 @@ CREATE TABLE subject (
 );
 
 CREATE TABLE topic (
-    system_name REFERENCES system (system_name)
-  , subject_name REFERENCES subject (subject_name)
+    system_name REFERENCES system (system_name) ON UPDATE CASCADE
+  , subject_name REFERENCES subject (subject_name) ON UPDATE CASCADE
   , topic_name
   , label
   , doc
@@ -39,9 +39,9 @@ CREATE TABLE topic (
 );
 
 CREATE TABLE doc (
-    system_name REFERENCES system (system_name)
-  , subject_name REFERENCES subject (subject_name)
-  , topic_name REFERENCES topic (topic_name)
+    system_name REFERENCES system (system_name) ON UPDATE CASCADE
+  , subject_name REFERENCES subject (subject_name) ON UPDATE CASCADE
+  , topic_name REFERENCES topic (topic_name) ON UPDATE CASCADE
   , doc_name
   , label
   , doc

@@ -17,7 +17,8 @@ test: wissen.db
 	@test x"wissen" == x`sqlite3 $< "SELECT system_name FROM system WHERE system_name = 'wissen'"`
 
 clean:
-	@-rm -f wissen.db
-	@-rm -fr bin/*
+	-rm -f wissen.db
+	-rm -fr bin/*
+	$(info All tidy and clean!)
 
 .PHONY: help
