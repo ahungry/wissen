@@ -9,7 +9,8 @@ bin/wissen: wissen.db
 	@./bin/wissen add wissen.cli.usage.help 'help' 'Usage: "wissen help" to list this help document.'
 	@./bin/wissen add wissen.cli.usage.ls 'ls' 'Usage: "wissen ls" to list docs.'
 	@./bin/wissen add wissen.cli.usage.add 'add' 'Usage: "wissen add <path> <label> <summary>" to add a doc, where path follows the form: system.subject.topic.doc'
-	@./bin/wissen add wissen.cli.usage.import 'import' 'Usage: "wissen import <markdown-file>" to import as a doc.'
+	@./bin/wissen add wissen.cli.usage.import 'import' 'Usage: "wissen import <system> <markdown-file>" to import as a doc under <system>.'
+	@./bin/wissen add wissen.cli.usage.dir_import 'dir_import' 'Usage: "wissen dir_import <dir-path> [<max-depth>=2]" to import each markdown file in each sub-directory in <dir-path> as a doc under <dir-path> system.'
 	@./bin/wissen add wissen.cli.usage.apropos 'apropos' 'Usage: "wissen apropos <term>" to search all docs for the term.'
 
 wissen.db:

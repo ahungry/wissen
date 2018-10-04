@@ -110,7 +110,7 @@ SELECT COALESCE(sy.label, sy.system_name) AS system
   , COALESCE(s.label, s.subject_name) AS subject
   , COALESCE(t.label, t.topic_name) AS topic
   , COALESCE(d.label, d.doc_name) AS title
-  , replace(replace(d.doc, char(10), ''), char(13), '')
+  , replace(replace(d.doc, char(10), ''), char(13), '') AS doc
 FROM doc d
 JOIN topic t USING (topic_name, subject_name, system_name)
 JOIN subject s USING (subject_name, system_name)
@@ -164,9 +164,20 @@ VALUES (trim('$system'), trim('$subject'), trim('$topic'), trim('$doc'), trim('$
 EOF
 }
 
+doc_dir_import () {
+    dir=$1
+    depth=$2
+
+    for d in `ls $dir`; do
+        find $dir/$d -maxdepth ${depth:-2} -name '*.md' -exec ./bin/wissen import $d {} \;
+    done
+}
+
 # Read a file line by line
 doc_import () {
-    system=''
+    system=$1
+    filename=$2
+
     subject=''
     topic=''
     doc=''
@@ -176,21 +187,12 @@ doc_import () {
     while IFS='' read -r line || [[ -n "$line" ]]; do
         # TODO: Make the case matcher a variable (# for md, * for org etc.)
         case $line in
-            '####'*)
-                # Pretend we're writing out to file here...
-                echo "$system.$subject.$topic.$doc $buf"
-                [ -n "$buf" ] && doc_add "$system.$subject.$topic.$doc" "$doc" "$buf"
-                buf=''
-                doc=$line
-                ;;
-
             '###'*)
                 # Pretend we're writing out to file here...
                 echo "$system.$subject.$topic.$doc $buf"
                 [ -n "$buf" ] && doc_add "$system.$subject.$topic.$doc" "$doc" "$buf"
                 buf=''
-                doc=''
-                topic=$line
+                doc=$line
                 ;;
 
             '##'*)
@@ -199,8 +201,7 @@ doc_import () {
                 [ -n "$buf" ] && doc_add "$system.$subject.$topic.$doc" "$doc" "$buf"
                 buf=''
                 doc=''
-                topic=''
-                subject=$line
+                topic=$line
                 ;;
 
             '#'*)
@@ -210,9 +211,20 @@ doc_import () {
                 buf=''
                 doc=''
                 topic=''
-                subject=''
-                system=$line
+                subject=$line
                 ;;
+
+            # TODO: Need to add more levels of chaining - for now, system is just the user input
+            # '#'*)
+            #     # Pretend we're writing out to file here...
+            #     echo "$system.$subject.$topic.$doc $buf"
+            #     [ -n "$buf" ] && doc_add "$system.$subject.$topic.$doc" "$doc" "$buf"
+            #     buf=''
+            #     doc=''
+            #     topic=''
+            #     subject=''
+            #     system=$line
+            #     ;;
 
             *)
                 buf=$(echo -e "$buf\n$line")
@@ -220,7 +232,7 @@ doc_import () {
         esac
 
         #echo "Text read from file: $line"
-    done < "$1"
+    done < "$filename"
 
     # Pretend we're writing out to file here...
     echo "$system.$subject.$topic.$doc $buf"

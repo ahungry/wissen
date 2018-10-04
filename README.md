@@ -43,7 +43,8 @@ These are common wissen commands used in various situations:
     help        Usage: "wissen help" to list this help document.
     ls          Usage: "wissen ls" to list docs.
     add         Usage: "wissen add <path> <label> <summary>" to add a doc, where path follows the form: system.subject.topic.doc
-    import      Usage: "wissen import <markdown-file>" to import as a doc.
+    import      Usage: "wissen import <system> <markdown-file>" to import as a doc under <system>.
+	dir_import  Usage: "wissen dir_import <dir-path> [<max-depth>=2]" to import each markdown file in each sub-directory in <dir-path> as a doc under <dir-path> system.
     apropos     Usage: "wissen apropos <term>" to search all docs for the term.
 ```
 
