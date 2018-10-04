@@ -100,6 +100,59 @@ INSERT INTO doc (system_name, subject_name, topic_name, doc_name, label, doc) VA
 EOF
 }
 
+# Read a file line by line
+doc_import () {
+    system=''
+    subject=''
+    topic=''
+    doc=''
+    buf=''
+
+    # Super basic markdown parser I guess
+    while IFS='' read -r line || [[ -n "$line" ]]; do
+        case $line in
+            '####'*)
+                buf=''
+                doc=$line
+                ;;
+
+            '###'*)
+                buf=''
+                doc=''
+                topic=$line
+                ;;
+
+            '##'*)
+                buf=''
+                doc=''
+                topic=''
+                subject=$line
+                ;;
+
+            '#'*)
+                buf=''
+                doc=''
+                topic=''
+                subject=''
+                system=$line
+                ;;
+
+            *)
+                buf=$(echo -e "$buf\n$line")
+                cat <<EOF
+system: $system
+subject: $subject
+topic:  $topic
+doc: $doc
+buf: $buf
+EOF
+                ;;
+        esac
+
+        #echo "Text read from file: $line"
+    done < "$1"
+}
+
 # Dynamically dispatch based on action.
 if type doc_$action > /dev/null 2>&1; then
     doc_$action "$arg1" "$arg2" "$arg3" | expand -t14
