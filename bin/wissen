@@ -2,8 +2,65 @@
 
 # -*- mode: sh -*-
 
+set +x
+
+# Gotta clean out / strip single quotes for easy SQL usage.
+action=$1
+arg1=$(echo $2 | sed -e "s/'/''/g")
+arg2=$(echo $3 | sed -e "s/'/''/g")
+arg3=$(echo $4 | sed -e "s/'/''/g")
+
+# Just pretty print out the docs.
+doc_help () {
+    # Header
+    cat <<EOF
+Wissen (v0.0.1)
+
+Homepage: https://github.com/ahungry/wissen
+Email: Matthew Carter <m@ahungry.com>
+
+Available help commands:
+
+EOF
+
+    # Dynamically pull from database
+    sqlite3 wissen.db <<EOF
+.mode tabs
+
+SELECT '  ' || d.doc_name, d.doc
+FROM doc d
+JOIN topic t USING (topic_name, subject_name, system_name)
+JOIN subject s USING (subject_name, system_name)
+JOIN system sy USING (system_name)
+WHERE d.system_name = 'wissen'
+  AND d.subject_name = 'cli'
+  AND d.topic_name = 'usage'
+;
+EOF
+
+}
+
+# Just pretty print out the docs.
+doc_ls () {
+    sqlite3 wissen.db <<EOF
+.headers on
+.mode column
+
+SELECT COALESCE(sy.label, sy.system_name) AS system
+  , COALESCE(s.label, s.subject_name) AS subject
+  , COALESCE(t.label, t.topic_name) AS topic
+  , COALESCE(d.label, d.doc_name) AS title
+  , d.doc
+FROM doc d
+JOIN topic t USING (topic_name, subject_name, system_name)
+JOIN subject s USING (subject_name, system_name)
+JOIN system sy USING (system_name)
+;
+EOF
+}
+
 # Just a really simple way to inject user data we want.
-add_doc () {
+doc_add () {
     leaf=$1
 
     system=$(echo $leaf | cut -f1 -d'.')
@@ -14,34 +71,20 @@ add_doc () {
     doc_label=$2
     doc_doc=$3
 
-    echo $system $subject $topic $doc $doc_label $doc_doc
-
     # We allow this to fail, so we don't have to check if the paths already exist.
-    sqlite3 wissen.db 2>/dev/null <<EOF
+    sqlite3 wissen.db <<EOF
 --BEGIN;
 INSERT INTO system (system_name) VALUES ('$system');
 INSERT INTO subject (system_name, subject_name) VALUES ('$system', '$subject');
 INSERT INTO topic (system_name, subject_name, topic_name) VALUES ('$system', '$subject', '$topic');
 INSERT INTO doc (system_name, subject_name, topic_name, doc_name, label, doc) VALUES ('$system', '$subject', '$topic', '$doc', '$doc_label', '$doc_doc');
-
-.headers on
-.mode column
-
-SELECT COALESCE(sy.label, sy.system_name) AS system
-  , COALESCE(s.label, s.subject_name) AS subject
-  , COALESCE(t.label, t.topic_name) AS topic
-  , COALESCE(d.label, d.doc_name) AS doc
-  , d.doc
-FROM doc d
-JOIN topic t USING (topic_name, subject_name, system_name)
-JOIN subject s USING (subject_name, system_name)
-JOIN system sy USING (system_name)
-;
-
 --COMMIT;
 EOF
+
+    doc_ls
 }
 
-add_doc $1 "$2" "$3"
+# Dynamically dispatch based on action.
+doc_$action "$arg1" "$arg2" "$arg3" | expand -t14
 
 exit 0
