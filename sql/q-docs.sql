@@ -5,6 +5,7 @@ SELECT doc_name
   , subject_name AS subject
   , topic_name AS topic
   , 'doc' AS type
+  , ROWID as id
 FROM doc
 WHERE system_name = $1
   AND subject_name = $2
