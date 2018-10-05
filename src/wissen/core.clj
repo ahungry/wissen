@@ -33,7 +33,7 @@
   (query db [(slurp "sql/q-docs.sql") system subject topic]))
 
 (defn chapter-or-section [{:keys [type]}]
-  (cond (= type "system") "chapter"
+  (cond (= type "subject") "chapter"
         :else "section"))
 
 (def buf (atom ""))
@@ -59,7 +59,7 @@
   [m])
 
 (defn info-out! [{:keys [doc label id] :as m}]
-  (if label (printb (format "@node %s(%s)\n@%s %s(%s)\n" label id (chapter-or-section m) label id)))
+  (if label (printb (format "\n@node %s(%s)\n@%s %s(%s)\n" label id (chapter-or-section m) label id)))
   (if doc (printb (format "%s\n" doc)))
   ;; We wrap in a list so we can chain in next-level
   [m])
@@ -76,10 +76,13 @@
 (defn hierarchy []
   (next-level
    [info-out!
-    menu-out!
-    subjects
-    ;; menu-out!
+    topics
     info-out!
+    menu-out!
+    docs
+    info-out!
+    ;; menu-out!
+    ;; menu-out!
     ;; topics
     ;; menu-start!
     ;; menu-out!
@@ -90,7 +93,7 @@
     ;; menu-out!
     ;; menu-stop!
     ;; info-out!
-    ] (systems))
+    ] (subjects {:system "wissen"}))
   nil)
 
 (defn top-level-menu [col]
@@ -125,7 +128,7 @@ Wissen
 
 @menu
 ")
-  (top-level-menu (systems))
+  (top-level-menu (subjects {:system "wissen"}))
   ;; (printb "
 ;; @detailmenu
 ;; --- The Detailed Node Listing ---
