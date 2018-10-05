@@ -65,6 +65,7 @@ These are common wissen commands used in various situations:
     dir_import  Usage: "wissen dir_import <dir-path> [<max-depth>=2]" to import each markdown file in each sub-directory in <dir-path> as a doc under <dir-path> system.
     apropos     Usage: "wissen apropos <term>" to search all docs for the term.
     gapropos    Usage: "wissen gapropos <term>" to search all docs for the term and open in web browser.
+    info        Usage: "wissen info <system> <title> to open system in INFO."
 ```
 
 ### Sample: Adding an entry via the CLI directly
