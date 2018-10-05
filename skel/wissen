@@ -247,6 +247,12 @@ doc_import () {
     echo "$system.$subject.$topic.$doc $buf"
 }
 
+# Spit out an info file on demand and open it.
+doc_info () {
+    lein run -m wissen.core "$1" "$2"
+    makeinfo /tmp/$1.texi -o /tmp/$1.info && info -f /tmp/$1.info
+}
+
 # Dynamically dispatch based on action.
 if type doc_$action > /dev/null 2>&1; then
     doc_$action "$arg1" "$arg2" "$arg3"

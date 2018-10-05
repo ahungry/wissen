@@ -27,9 +27,19 @@ if test x"$SED_CHECK" != x"yes" ; then
     AC_MSG_ERROR([Please install sed.])
 fi
 
-AC_CHECK_PROG(EXPAND_CHECK, expand, yes)
-if test x"$EXPAND_CHECK" != x"yes" ; then
-    AC_MSG_ERROR([Please install expand.])
+AC_CHECK_PROG(LEIN_CHECK, lein, yes)
+if test x"$LEIN_CHECK" != x"yes" ; then
+    AC_MSG_ERROR([Please install lein.])
+fi
+
+AC_CHECK_PROG(MAKEINFO_CHECK, makeinfo, yes)
+if test x"$MAKEINFO_CHECK" != x"yes" ; then
+    AC_MSG_ERROR([Please install makeinfo.])
+fi
+
+AC_CHECK_PROG(INFO_CHECK, info, yes)
+if test x"$INFO_CHECK" != x"yes" ; then
+    AC_MSG_ERROR([Please install info.])
 fi
 
 AC_CONFIG_FILES([Makefile])
