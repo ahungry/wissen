@@ -76,23 +76,8 @@
 (defn hierarchy [sys]
   (next-level
    [info-out!
-    topics
-    info-out!
-    menu-out!
-    docs
-    info-out!
-    ;; menu-out!
-    ;; menu-out!
-    ;; topics
-    ;; menu-start!
-    ;; menu-out!
-    ;; menu-stop!
-    ;; info-out!
-    ;; docs
-    ;; menu-start!
-    ;; menu-out!
-    ;; menu-stop!
-    ;; info-out!
+    topics info-out! menu-out!
+    docs info-out!
     ] (subjects {:system sys}))
   nil)
 
