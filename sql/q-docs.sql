@@ -4,6 +4,7 @@ SELECT doc_name
   , system_name AS system
   , subject_name AS subject
   , topic_name AS topic
+  , 'doc' AS type
 FROM doc
 WHERE system_name = $1
   AND subject_name = $2

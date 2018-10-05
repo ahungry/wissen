@@ -32,27 +32,31 @@
 (defn docs [{:keys [system subject topic]}]
   (query db [(slurp "sql/q-docs.sql") system subject topic]))
 
+(defn info-out! [{:keys [doc label] :as m}]
+  (println (format "Label: %s\n%s" label doc ))
+  ;; We wrap in a list so we can chain in next-level
+  [m])
+
 (defn next-level
   "Accessible with something like (next-level [subjects topics docs] (systems))."
   [[f & rest] col]
-  (if rest
-    (doall (map (fn [parent] (next-level rest (apply f [parent]))) col))
-    (doall (map (fn [parent] (apply f [parent])) col))
-    ))
-
-(defn info-out! [{:keys [doc label] :as m}]
-  (println (format "Label: %s\n%s" label doc ))
-  m)
+  (doall
+   (if rest
+     (map (fn [parent] (next-level rest (apply f [parent]))) col)
+     (map (fn [parent] (apply f [parent])) col)
+     )))
 
 (defn hierarchy []
   (next-level
-   [subjects
+   [info-out!
+    subjects
     info-out!
     topics
     info-out!
     docs
     info-out!
-    ] (systems)))
+    ] (systems))
+  nil)
 
 (defn test [db]
   (query db "select count(*) FROM doc"))
