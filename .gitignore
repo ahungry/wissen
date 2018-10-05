@@ -9,6 +9,21 @@ autom4te.cache/
 
 TAGS
 
+# Lein stuff
+/target
+/classes
+/checkouts
+pom.xml
+pom.xml.asc
+*.jar
+*.class
+/.lein-*
+/.nrepl-port
+.hgignore
+.hg/
+dist
+dist.tar.gz
+
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies
