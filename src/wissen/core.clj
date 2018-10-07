@@ -47,7 +47,7 @@
   (push-to-buf! s))
 
 (defn menu-item-out! [{:keys [id label] :as m}]
-  (if label (printb (format "* %s(%s)::\n" label id)))
+  (if label (printb (format "* %s. %s::\n" id label)))
   ;; We wrap in a list so we can chain in next-level
   [m])
 
@@ -58,9 +58,14 @@
   ;; We wrap in a list so we can chain in next-level
   [m])
 
+(defn clean-doc
+  "makeinfo is not a fan of unescaped braces, escape with leading @."
+  [s]
+  (clojure.string/replace s #"[{}]" #(str "@" %1)))
+
 (defn info-out! [{:keys [doc label id] :as m}]
-  (if label (printb (format "\n@node %s(%s)\n@%s %s(%s)\n" label id (chapter-or-section m) label id)))
-  (if doc (printb (format "%s\n" doc)))
+  (if label (printb (format "\n@node %s. %s\n@%s %s. %s\n" id label (chapter-or-section m) id label)))
+  (if doc (printb (format "%s\n" (clean-doc doc))))
   ;; We wrap in a list so we can chain in next-level
   [m])
 

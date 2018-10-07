@@ -244,7 +244,7 @@ doc_import () {
     done < "$filename"
 
     # Pretend we're writing out to file here...
-    echo "$system.$subject.$topic.$doc $buf"
+    # echo "$system.$subject.$topic.$doc $buf"
 }
 
 # Spit out an info file on demand and open it.
