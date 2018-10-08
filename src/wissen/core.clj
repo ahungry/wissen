@@ -1,6 +1,8 @@
 ;; https://github.com/ogrim/clojure-sqlite-example
 
 (ns wissen.core
+  (:import
+   (java.security.MessageDigest))
   (:require
    [clojure.spec.alpha :as s]
    [clojure.spec.gen.alpha :as gen]
@@ -61,13 +63,18 @@
       clean-doc
       (clojure.string/replace #"[:]" "")))
 
+(defn md5 [^String s]
+  (let [algorithm (java.security.MessageDigest/getInstance "MD5")
+        raw (.digest algorithm (.getBytes s))]
+    (format "%032x" (BigInteger. 1 raw))))
+
 (defn node-path [{:keys [id label system subject topic] :as m}]
   (str
    (clean-label (clojure.string/join
                  "/"
                  (filter #(> (count %) 0)
                          [system subject topic])))
-   " [" id "]"))
+   " [" (subs (md5 (str id)) 0 6) "]"))
 
 (defn menu-item-out! [{:keys [id label system subject topic] :as m}]
   (if label (printb (format "* %s - %s::\n"
