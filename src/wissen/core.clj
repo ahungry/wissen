@@ -50,6 +50,7 @@
   "makeinfo is not a fan of unescaped braces, escape with leading @."
   [s]
   (-> s
+      (clojure.string/replace "\n" "\n\n")
       (clojure.string/replace "@" "@@")
       (clojure.string/replace #"[{}]" #(str "@" %1))))
 
