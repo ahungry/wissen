@@ -46,10 +46,19 @@
   (println s)
   (push-to-buf! s))
 
+(defn clean-doc
+  "makeinfo is not a fan of unescaped braces, escape with leading @."
+  [s]
+  (-> s
+      (clojure.string/replace "@" "@@")
+      (clojure.string/replace #"[{}]" #(str "@" %1))))
+
 (defn clean-label
   "makeinfo is not a fan of colon in labels, escape by removing."
   [s]
-  (clojure.string/replace s #"[:]" ""))
+  (-> s
+      clean-doc
+      (clojure.string/replace #"[:]" "")))
 
 (defn menu-item-out! [{:keys [id label] :as m}]
   (if label (printb (format "* %s. %s::\n" id (clean-label label))))
@@ -62,13 +71,6 @@
   (printb "@end menu\n\n")
   ;; We wrap in a list so we can chain in next-level
   [m])
-
-(defn clean-doc
-  "makeinfo is not a fan of unescaped braces, escape with leading @."
-  [s]
-  (-> s
-      (clojure.string/replace "@" "@@")
-      (clojure.string/replace #"[{}]" #(str "@" %1))))
 
 (defn info-out! [{:keys [doc label id] :as m}]
   (if label (printb (format "\n@node %s. %s\n@%s %s. %s\n" id (clean-label label) (chapter-or-section m) id (clean-label label))))
