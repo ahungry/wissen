@@ -62,10 +62,12 @@
       (clojure.string/replace #"[:]" "")))
 
 (defn node-path [{:keys [id label system subject topic] :as m}]
-  (clean-label (clojure.string/join
-                "/"
-                (filter #(> (count %) 0)
-                        [system subject topic]))))
+  (str
+   (clean-label (clojure.string/join
+                 "/"
+                 (filter #(> (count %) 0)
+                         [system subject topic])))
+   " [" id "]"))
 
 (defn menu-item-out! [{:keys [id label system subject topic] :as m}]
   (if label (printb (format "* %s - %s::\n"
