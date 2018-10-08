@@ -61,8 +61,17 @@
       clean-doc
       (clojure.string/replace #"[:]" "")))
 
-(defn menu-item-out! [{:keys [id label] :as m}]
-  (if label (printb (format "* %s. %s::\n" id (clean-label label))))
+(defn node-path [{:keys [id label system subject topic] :as m}]
+  (clean-label (clojure.string/join
+                "/"
+                (filter #(> (count %) 0)
+                        [system subject topic]))))
+
+(defn menu-item-out! [{:keys [id label system subject topic] :as m}]
+  (if label (printb (format "* %s - %s::\n"
+                            (node-path m)
+                            (clean-label label)
+                            )))
   ;; We wrap in a list so we can chain in next-level
   [m])
 
@@ -73,8 +82,13 @@
   ;; We wrap in a list so we can chain in next-level
   [m])
 
-(defn info-out! [{:keys [doc label id] :as m}]
-  (if label (printb (format "\n@node %s. %s\n@%s %s. %s\n" id (clean-label label) (chapter-or-section m) id (clean-label label))))
+(defn info-out! [{:keys [doc label id system subject topic] :as m}]
+  (if label (printb (format "\n@node %s - %s\n@%s %s - %s\n"
+                            (node-path m)
+                            (clean-label label)
+                            (chapter-or-section m)
+                            (node-path m)
+                            (clean-label label))))
   (if doc (printb (format "%s\n" (clean-doc doc))))
   ;; We wrap in a list so we can chain in next-level
   [m])
